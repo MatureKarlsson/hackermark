@@ -1,15 +1,25 @@
-*.class
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.misc/
 
-# Package Files #
-*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
-# eclipse files
+### STS ###
+.apt_generated
 .classpath
+.factorypath
 .project
-.settings/**
-/target/
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
