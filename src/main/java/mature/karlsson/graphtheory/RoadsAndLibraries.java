@@ -32,8 +32,10 @@ public class RoadsAndLibraries {
             int cnum = queue.remove();
             ctot++;
             for (int i = 0; i < n; i++)
-                if (!adjMatrix[cnum][i])
+                if (adjMatrix[cnum][i] && !visitedCities[i]) {
                     queue.add(i);
+                    visitedCities[i] = true;
+                }
         }
 
         return ctot;
