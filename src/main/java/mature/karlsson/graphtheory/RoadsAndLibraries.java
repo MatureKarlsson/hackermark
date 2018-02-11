@@ -6,33 +6,34 @@ import java.util.*;
 
 public class RoadsAndLibraries {
 
-    private static int q, n, m, clib, croad = 0;
-    private static boolean[][] adjMatrix;
-    private static boolean[] visitedCities;
+    private int q, n, m, clib, croad = 0;
+    //every integer in the array is a city (adjMatrix[0] is city #1)
+    //every bit in an integer is accessibility from the city to another one (bit 0 set to 1 means city #1 is accessible from this one)
+    private int[] adjMatrix;
+    //every bit in the integer means city has been visited or not (bit 0 set to 1 means city #1 has been visited)
+    private int visitedCities;
 
     public static void main(String... args) throws FileNotFoundException {
-//        int a = 100000;
-//        int b = 100000;
-//        long c = a*b;
-//        System.out.println(c);
-
-        if (args.length > 0) {//it is expected to be a file name to be used as STDIN, manual input otherwise
+        if (args.length > 0) {
+            //it is expected to be a file name to be used as STDIN, manual input otherwise
             System.setIn(new FileInputStream(args[0]));
         }
 
-        adjMatrix = new boolean[100000][100000];
-        visitedCities = new boolean[100000];
+        new RoadsAndLibraries().process();
+    }
+
+    private void process() {
         Scanner in = new Scanner(System.in);
         q = in.nextInt();
         for (int i=1; i<=q; i++) {
-            initHackerLand(in);
+            initQuery(in);
             long theCost;
 
-            if (clib <= croad) //it is cheaper to build a library in every city if road cost is not lower
-                theCost = (long)clib*(long)n;
-            else { //one library per segment, and roads to connect cities
+            if (clib <= croad) {
+                //just build a library in each city if libraries are cheaper then roads
+                theCost = (long)clib * (long)n;
+            } else {
                 Collection<Integer> connectedGraphs = new ArrayList<>();
-                //for every not visited city
                 for (int cnum = 0; cnum < n; cnum++)
                     if (!visitedCities[cnum])
                         connectedGraphs.add(bfs(cnum));
@@ -45,10 +46,11 @@ public class RoadsAndLibraries {
         }
     }
 
-    private static int bfs(int cstart) {
+
+    private int bfs(int cstart) {
         Queue<Integer> queue = new ArrayDeque<>(n);
         queue.add(cstart);
-        visitedCities[cstart] = true;
+        addVisitedCity(cstart);
         int ctot = 0;
 
         while (queue.peek() != null) {
@@ -64,27 +66,25 @@ public class RoadsAndLibraries {
         return ctot;
     }
 
-    private static void initHackerLand(Scanner in) {
+    private void addVisitedCity(int cnum) {
+        visitedCities = visitedCities | 1 << (cnum - 1);
+    }
+
+    private void initQuery(Scanner in) {
         n = in.nextInt(); //number of cities
         m = in.nextInt(); //number of roads
         clib = in.nextInt(); //cost of a library
         croad = in.nextInt(); //cost of a road
 
-        //initialize road matrix
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                adjMatrix[i][j] = false;
-        //fill in road matrix
+        adjMatrix = new int[n];
         for (int i = 1; i <= m; i++) {
             int ui = in.nextInt();
             int vi = in.nextInt();
-            adjMatrix[ui - 1][vi - 1] = true;
-            adjMatrix[vi - 1][ui - 1] = true;
+            adjMatrix[ui] = adjMatrix[ui] | 1 << (vi - 1);
+            adjMatrix[vi] = adjMatrix[vi] | 1 << (vi - 1);
         }
-        //initialize visitedCities
-        for (int i = 0; i < n; i++)
-            visitedCities[i] = false;
 
+        visitedCities = 0;
     }
 
 
