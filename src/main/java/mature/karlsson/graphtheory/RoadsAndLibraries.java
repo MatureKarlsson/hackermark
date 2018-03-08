@@ -63,16 +63,17 @@ public class RoadsAndLibraries {
             } else {
                 //build library per connected segment and repair roads
                 queue.clear();
-                queue.offer(cities.get(0));
 
-                City city = null;
-                int citiesInSegment = 0;
+                City city = cities.get(0);
+                city.visited = true;
+                queue.offer(city);
+                int citiesInSegment = 1;
+
                 while ((city = queue.poll()) != null) {
-                    citiesInSegment++;
-                    city.visited = true;
-
                     for (City linkedCity : city.linkedCities) {
                         if (!linkedCity.visited) {
+                            citiesInSegment++;
+                            city.visited = true;
                             queue.offer(linkedCity);
                         }
                     }
