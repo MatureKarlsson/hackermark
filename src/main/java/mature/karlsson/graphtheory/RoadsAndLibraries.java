@@ -12,7 +12,7 @@ public class RoadsAndLibraries {
     private static class City {
 
         HashSet<City> linkedCities;
-        int num;
+        long num;
         boolean visited;
 
         City(int num) {
@@ -36,7 +36,7 @@ public class RoadsAndLibraries {
     //m - number of roads
     //clib - cost of building a library
     //croad - cost of repairing a road
-    private int q, n, m, clib, croad = 0;
+    private long q, n, m, clib, croad = 0;
 
     private List<City> cities = new ArrayList<>();
     private Scanner in = new Scanner(System.in);
@@ -56,30 +56,33 @@ public class RoadsAndLibraries {
         for (int qi=1; qi <= q; qi++) {
             initQuery();
 
-            int cost;
+            long cost = 0;
             if (croad > clib) {
                 //if road is more expensive than library then build a library in each city
                 cost = clib*n;
             } else {
                 //build library per connected segment and repair roads
-                queue.clear();
+                for (City city : cities) {
+                    if (!city.visited) {
+                        queue.clear();
+                        queue.offer(city);
+                        city.visited = true;
+                        int citiesInSegment = 1;
 
-                City city = cities.get(0);
-                city.visited = true;
-                queue.offer(city);
-                int citiesInSegment = 1;
-
-                while ((city = queue.poll()) != null) {
-                    for (City linkedCity : city.linkedCities) {
-                        if (!linkedCity.visited) {
-                            citiesInSegment++;
-                            city.visited = true;
-                            queue.offer(linkedCity);
+                        City vCity;
+                        while ((vCity = queue.poll()) != null) {
+                            for (City linkedCity : vCity.linkedCities) {
+                                if (!linkedCity.visited) {
+                                    citiesInSegment++;
+                                    linkedCity.visited = true;
+                                    queue.offer(linkedCity);
+                                }
+                            }
                         }
+
+                        cost += clib + (citiesInSegment - 1) * croad;
                     }
                 }
-
-                cost = clib + croad * (citiesInSegment - 1);
             }
 
             System.out.println(cost);
