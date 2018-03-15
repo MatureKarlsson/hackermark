@@ -1,5 +1,6 @@
 package mature.karlsson.dynamicprogramming;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Equal {
@@ -18,16 +19,38 @@ public class Equal {
                 dist[i] = in.nextInt();
             }
 
+            int bestRate = 0;
+            int[] bestOption = new int[dist.length];
             for (int exclude = 0; exclude < dist.length; exclude++) {
-                for (int g = 0; g < give.length; g++) {
-                    for (int d = 0; d < dist.length; d++) {
-                        
+                for (int append : give) {
+                    int[] option = new int[dist.length];
+                    for (int i = 0; i < dist.length; i++) {
+                        option[i] = i == exclude ? dist[i] : dist[i] + append;
                     }
+
                 }
             }
 
 
         }
+    }
+
+    private static int maxSimilarValues(int[] arr) {
+        Arrays.sort(arr);
+        int val = -1;
+        int bestResult = 0;
+        int result = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (val == arr[i]) {
+                result++;
+            } else {
+                bestResult = bestResult >= result ? bestResult : result;
+                result = 1;
+                val = arr[i];
+            }
+        }
+
+        return bestResult;
     }
 
 //            for (int exclude = 0; exclude < dist.length; exclude++) {
