@@ -1,2 +1,2 @@
-# hackermark
-Hackermark challenges
+# hackerrank
+Hackerrank challenges
