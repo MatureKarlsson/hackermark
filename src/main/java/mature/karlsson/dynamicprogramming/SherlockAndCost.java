@@ -1,4 +1,4 @@
-package mature.karlsson.graphtheory;
+package mature.karlsson.dynamicprogramming;
 
 import java.io.*;
 import java.util.*;
