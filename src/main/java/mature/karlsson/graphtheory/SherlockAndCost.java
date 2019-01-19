@@ -7,79 +7,40 @@ public class SherlockAndCost {
 
     // Complete the cost function below.
     static int cost(int[] b) {
-        int[] a = new int[b.length];
-        buildA(a, b, 0, b.length-1);
-        return calculateCost(a);
-    }
-
-    static void buildA(int[] a, int[] b, int bFirst, int bLast) {
-        int ind = findMaxInd(b, bFirst, bLast);
-        setA(a, ind, b[ind]);
-        setB(b, ind);
-
-        if ((bLast - bFirst) > 1) {
-            buildA(a, b, bFirst, ind-1);
-            buildA(a, b, ind+1, bLast);
+        int[] result = {0, 0};
+        for (int i = 0; i < b.length; i++) {
+            result = calculateSubCost(b, i, result);
         }
+        return Math.max(result[0], result[1]);
     }
 
-    /**
-     * Sets as follows
-     * <ul>
-     *     <li>b[ind] = 0</li>
-     *     <li>b[ind+1] = 0</li>
-     *     <li>b[ind-1] = 0</li>
-     * </ul>
-     */
-    static void setB(int[] b, int ind) {
-        safeSet(b, ind, 0, false);
-        safeSet(b, ind+1, 0, false);
-        safeSet(b, ind-1, 0, false);
-    }
+    static int[] calculateSubCost(int[] ar, int idx, int[] prevResult) {
+        final int LAST_IS_VALUE = 0;
+        final int LAST_IS_ONE = 1;
 
-    /**
-     * Sets as follows
-     * <ul>
-     *     <li>a[ind] = b[ind]</li>
-     *     <li>a[ind+1] = 1</li>
-     *     <li>a[ind-1] = 1</li>
-     * </ul>
-     */
-    static void setA(int[] a, int ind, int value) {
-        safeSet(a, ind, value, true);
-        safeSet(a, ind+1, 1, true);
-        safeSet(a, ind-1, 1, true);
-    }
+        int[] result = {0, 0};
 
+        if (idx <= 0)
+            return result;
 
-
-
-    static int calculateCost(int[] a) {
-        int cost = 0;
-        for (int i = 1; i < a.length; i++) {
-            cost += Math.abs(a[i] - a[i-1]);
+        if (idx == 1) {
+            result[LAST_IS_VALUE] = ar[idx] - 1;
+            result[LAST_IS_ONE] = ar[idx-1] - 1;
+            return result;
         }
-        return cost;
+
+        int oneValue = ar[idx] - 1;
+        int valueOne = ar[idx-1] - 1;
+        int valueValue = Math.abs(ar[idx] - ar[idx-1]);
+        result[LAST_IS_VALUE] = Math.max(
+                prevResult[LAST_IS_ONE] + oneValue,
+                prevResult[LAST_IS_VALUE] + valueValue
+        );
+        result[LAST_IS_ONE] = prevResult[LAST_IS_VALUE] + valueOne;
+
+        return result;
     }
 
-    static int findMaxInd(int[] b, int first, int last) {
-        int max = 0;
-        int ind = 0;
-
-        for (int i = first; i <= last; i++) {
-            if (b[i] > max) {
-                max = b[i];
-                ind = i;
-            }
-        }
-        return ind;
-    }
-
-    static void safeSet(int[] arr, int ind, int value, boolean ifZeroOnly) {
-        if (ind >= 0 && ind < arr.length && (!ifZeroOnly || arr[ind] == 0)) {
-            arr[ind] = value;
-        }
-    }
 
     private static final Scanner scanner = new Scanner(System.in);
 
